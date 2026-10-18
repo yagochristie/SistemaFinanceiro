@@ -1,0 +1,50 @@
+{
+  "name": "softdarf-desktop",
+  "version": "1.0.0",
+  "description": "SoftDarf empacotado como aplicativo desktop.",
+  "author": "SoftDarf",
+  "main": "desktop/main.js",
+  "private": true,
+  "scripts": {
+    "desktop": "electron .",
+    "test:front": "node scripts/frontend-smoke.js",
+    "jar": "powershell -ExecutionPolicy Bypass -File desktop/package-backend.ps1",
+    "dist": "npm run jar && electron-builder --win dir",
+    "dist:sem-jar": "electron-builder --win dir",
+    "dist:portable": "npm run jar && electron-builder --win portable",
+    "test": "npm run test:front && node scripts/desktop-smoke.js && node --check scripts/system-smoke.js",
+    "test:system": "node scripts/system-smoke.js"
+  },
+  "devDependencies": {
+    "electron": "44.9.0",
+    "electron-builder": "26.17.0"
+  },
+  "build": {
+    "appId": "com.yago.softdarf",
+    "productName": "SoftDarf",
+    "asar": false,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "desktop/**/*",
+      "teste.html",
+      "crescimento.png"
+    ],
+    "extraResources": [
+      {
+        "from": "wheel/target/wheel-0.0.1-SNAPSHOT.jar",
+        "to": "backend/wheel.jar"
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "portable"
+      ]
+    }
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

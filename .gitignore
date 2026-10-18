@@ -1,0 +1,25 @@
+node_modules/
+dist/
+dist-fixed/
+dist-*/
+backups/
+.codex_spreadsheet/
+outputs/
+darf.html
+wheel/target/
+wheel/data/
+*.class
+
+# Arquivos locais, relatorios e dados pessoais
+.tmp/
+output/
+Instalacoes/
+BR/
+OPÇOES/
+.agents/
+*.log
+.env
+.env.*
+!.env.example
+*.mv.db
+*.trace.db

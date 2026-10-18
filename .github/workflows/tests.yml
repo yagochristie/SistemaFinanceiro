@@ -1,0 +1,47 @@
+name: Testes do sistema
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-e-calculos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - run: npm ci
+      - run: npm test
+      - run: npm audit --audit-level=high
+      - run: bash mvnw -B -ntp test
+        working-directory: wheel
+
+  aplicativo-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - run: npm ci
+      - run: npm run jar
+      - run: npm run test:system
+      - run: npm run dist:sem-jar

@@ -29,6 +29,7 @@ cd wheel
 
 ```powershell
 npm test
+npm run test:dependencies
 cd wheel
 .\mvnw.cmd test
 cd ..
@@ -37,6 +38,14 @@ npm run test:system
 ```
 
 Os testes de backend usam H2 em memória. O teste de sistema inicia outro banco em memória e uma janela oculta do Electron com perfil separado, cria contas fictícias e verifica cadastro, login, aporte, cripto, navegação, privacidade e isolamento entre contas. As respostas de cotação são simuladas nesse teste; as carteiras e a autenticação usam o backend real.
+
+O teste de dependências usa um proxy local fictício para verificar downloads, exceções `NO_PROXY`, validação SHA-256 e rejeição de arquivos alterados. Ele não acessa a internet.
+
+## Dependências de empacotamento
+
+O projeto fixa `global-agent` em 4.1.3 somente para versões de `@electron/get` anteriores à 5. Essa versão remove a cadeia vulnerável `roarr`/`sprintf-js`, mantendo a API de proxy usada pelo electron-builder. A regra fica registrada em `overrides` e no arquivo de dependências, sem editar manualmente `node_modules`.
+
+O GitHub Actions verifica a auditoria com `npm audit --audit-level=low`, bloqueando qualquer vulnerabilidade conhecida que a ferramenta classifique como baixa ou superior.
 
 ## Gerar o aplicativo Windows
 

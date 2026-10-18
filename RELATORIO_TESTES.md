@@ -2,7 +2,7 @@
 
 ## Resultado
 
-34 testes de backend aprovados, além das suítes de cálculos/importação, sessão da interface, disponibilidade do backend e do teste com Electron real. O empacotamento Windows também foi concluído.
+34 testes de backend aprovados, além das suítes de cálculos/importação, sessão da interface, disponibilidade do backend e do teste com Electron real. O empacotamento Windows também foi concluído. Os oito alertas moderados restantes foram corrigidos em uma atualização das dependências, com teste adicional do componente de proxy.
 
 ## Correções
 
@@ -30,13 +30,18 @@
 | Inicialização: respostas UP/DOWN, HTTP 404/503 e conteúdo inválido | Aprovada |
 | Electron real: cadastro, login, aporte, cripto, navegação, privacidade, recarga e duas contas | Aprovado |
 | Geração do backend e pacote Windows com Electron 44.9.0 | Concluída |
-| Auditoria npm | 0 críticos, 0 altos, 8 moderados |
+| Downloads do empacotador: proxy, NO_PROXY, SHA-256 e rejeição de conteúdo alterado | Aprovados |
+| Auditoria npm após corrigir as dependências | 0 vulnerabilidades conhecidas |
 
 Os testes locais foram executados no Windows com Node.js 24 e JDK 26, compilando o backend para Java 17. O fluxo de integração contínua usa Java 17.
 
 ## Dependências e limites
 
-A auditoria inicial apontava 20 alertas: 1 crítico, 15 altos e 4 moderados. Após atualizar para Electron 44.9.0 e electron-builder 26.17.0, restaram oito alertas moderados derivados da cadeia de logs `sprintf-js` → `roarr` → `global-agent`, usada por ferramentas de empacotamento. A versão publicada de `sprintf-js` consultada ainda era 1.1.3; não foi aplicada uma troca de versão incompatível dessa cadeia. Os metadados de correção automática sugeriam rebaixar o empacotador, opção que não foi aplicada. A auditoria continua no fluxo automático com bloqueio para alertas altos e críticos.
+A auditoria inicial apontava 20 alertas: 1 crítico, 15 altos e 4 moderados. Atualizar Electron e electron-builder eliminou os altos e críticos, mas deixou oito moderados derivados da cadeia `sprintf-js` → `roarr` → `global-agent`.
+
+A correção final fixa `global-agent` em 4.1.3 por uma regra `overrides` restrita a `@electron/get@<5`. A versão 4.1 remove `roarr` e, consequentemente, `sprintf-js`, conforme as [notas oficiais de lançamento](https://github.com/gajus/global-agent/releases/tag/v4.1.0). Electron 44.9.0, electron-builder 26.17.0 e a interface de download do empacotador foram preservados. A instalação limpa reproduz a resolução corrigida pelo `package-lock.json`.
+
+Foi acrescentado um teste com o downloader realmente resolvido pelo electron-builder. O teste usa servidores locais e verifica download por proxy, acesso direto por `NO_PROXY`, integridade SHA-256 e rejeição de um arquivo com checksum incorreto. O fluxo automático executa esse teste em Linux e Windows e passou a bloquear alertas baixos ou superiores com `npm audit --audit-level=low`.
 
 A versão do Electron foi conferida no [histórico oficial de releases](https://releases.electronjs.org/). A consulta de vulnerabilidades foi feita pelo `npm audit` sobre o arquivo de dependências do projeto.
 

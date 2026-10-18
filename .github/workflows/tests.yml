@@ -24,7 +24,8 @@ jobs:
           cache: maven
       - run: npm ci
       - run: npm test
-      - run: npm audit --audit-level=high
+      - run: npm run test:dependencies
+      - run: npm audit --audit-level=low
       - run: bash mvnw -B -ntp test
         working-directory: wheel
 
@@ -42,6 +43,7 @@ jobs:
           java-version: '17'
           cache: maven
       - run: npm ci
+      - run: npm run test:dependencies
       - run: npm run jar
       - run: npm run test:system
       - run: npm run dist:sem-jar

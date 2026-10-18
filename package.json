@@ -13,11 +13,17 @@
     "dist:sem-jar": "electron-builder --win dir",
     "dist:portable": "npm run jar && electron-builder --win portable",
     "test": "npm run test:front && node scripts/desktop-smoke.js && node --check scripts/system-smoke.js",
-    "test:system": "node scripts/system-smoke.js"
+    "test:system": "node scripts/system-smoke.js",
+    "test:dependencies": "node scripts/download-proxy-smoke.js"
   },
   "devDependencies": {
     "electron": "44.9.0",
     "electron-builder": "26.17.0"
+  },
+  "overrides": {
+    "@electron/get@<5": {
+      "global-agent": "4.1.3"
+    }
   },
   "build": {
     "appId": "com.yago.softdarf",
